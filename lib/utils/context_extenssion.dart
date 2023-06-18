@@ -1,3 +1,4 @@
+import 'package:app_note/screens/app/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,7 +13,7 @@ extension ContextHelper on BuildContext {
         '/launch_screen': (context) => const LaunchScreen(),
         '/register_screen': (context) => const RegisterScreen(),
         '/login_screen': (context) => const LoginScreen(),
-        '/home_screen': (context) => const LaunchScreen(),
+        '/home_screen': (context) => const HomeScreen(),
       };
 
 

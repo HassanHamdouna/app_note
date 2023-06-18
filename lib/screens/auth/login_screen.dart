@@ -15,7 +15,7 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen>  {
+class _LoginScreenState extends State<LoginScreen> {
   late TextEditingController _emailTextController;
   late TextEditingController _passwordTextController;
   bool _obscure = true;
@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen>  {
             onPressed: () {
               _showLanguageBottomSheet();
             },
-            icon: Icon(Icons.language),
+            icon: const Icon(Icons.language),
           ),
         ],
       ),
@@ -204,7 +204,7 @@ class _LoginScreenState extends State<LoginScreen>  {
 
   void _performLogin() {
     if (_checkData()) {
-      // _login();
+      _login();
     }
   }
 
@@ -216,18 +216,8 @@ class _LoginScreenState extends State<LoginScreen>  {
     context.showSnackBar(message: 'Enter required data', error: true);
     return false;
   }
-  //
-  // void _login() async {
-  //   ProcessResponse processResponse = await UserDbController().login(
-  //     email: _emailTextController.text,
-  //     password: _passwordTextController.text,
-  //   );
-  //   if (processResponse.success) {
-  //     Navigator.pushReplacementNamed(context, '/products_screen');
-  //   }
-  //   context.showSnackBar(
-  //     message: processResponse.message,
-  //     error: !processResponse.success,
-  //   );
-  // }
+
+void _login() async {
+
+}
 }
