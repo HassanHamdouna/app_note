@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../screens/auth/login_screen.dart';
+import '../screens/auth/register_screen.dart';
 import '../screens/core/launch_screen.dart';
 
 extension ContextHelper on BuildContext {
   Map<String, WidgetBuilder> get rout => {
         '/launch_screen': (context) => const LaunchScreen(),
-        '/register_screen': (context) => const LaunchScreen(),
-        '/login_screen': (context) => const LaunchScreen(),
+        '/register_screen': (context) => const RegisterScreen(),
+        '/login_screen': (context) => const LoginScreen(),
         '/home_screen': (context) => const LaunchScreen(),
       };
 
+
   ThemeData get themData => ThemeData(
       primarySwatch: Colors.blue,
+      textTheme: TextTheme(
+        bodyMedium: GoogleFonts.poppins()
+      ),
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
+        elevation: 0,
         iconTheme: const IconThemeData(
           color: Colors.black,
           size: 20,
@@ -25,9 +33,11 @@ extension ContextHelper on BuildContext {
         centerTitle: true,
       ));
 
-  void showSnackBar({required String massage, bool error = false}) {
+
+
+  void showSnackBar({required String message, bool error = false}) {
     ScaffoldMessenger.of(this).showSnackBar(SnackBar(
-      content: Text(massage,
+      content: Text(message,
           style: GoogleFonts.poppins(
               fontSize: 14.sp,
               fontWeight: FontWeight.w500,
@@ -38,10 +48,14 @@ extension ContextHelper on BuildContext {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.r),
       ),
-      padding: EdgeInsets.symmetric(horizontal: 10.sp),
       dismissDirection: DismissDirection.horizontal,
       duration: const Duration(milliseconds: 800),
     ));
+  }
+
+  AppLocalizations  get localizations  {
+    return AppLocalizations.of(this)!;
+
   }
 }
 

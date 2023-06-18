@@ -16,7 +16,8 @@ class _LaunchScreenState extends State<LaunchScreen> {
   void initState() {
     super.initState();
     Future.delayed( const Duration(seconds: 3) , (){
-      Navigator.pushReplacementNamed(context, "/home_screen");
+      Navigator.pushReplacementNamed(context, "/login_screen");
+      // Navigator.pushReplacementNamed(context, "/register_screen");
     });
   }
   @override
