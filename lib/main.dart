@@ -1,4 +1,6 @@
+import 'package:app_note/utils/context_extenssion.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,10 +11,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+    return ScreenUtilInit(
+      designSize: const  Size(375, 812),
+      builder: (context, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: context.themData,
+          initialRoute: '/launch_screen',
+          routes: context.rout,
+        );
+      },
     );
   }
 }
