@@ -35,4 +35,9 @@ class FbAuthController {
       return FbResponse('Something went Wrong', false);
     }
   }
+
+  Future<void> signOut(){
+    return _auth.signOut();
+  }
+
 }
