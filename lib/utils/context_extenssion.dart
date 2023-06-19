@@ -50,7 +50,7 @@ extension ContextHelper on BuildContext {
         borderRadius: BorderRadius.circular(20.r),
       ),
       dismissDirection: DismissDirection.horizontal,
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 2000),
     ));
   }
 

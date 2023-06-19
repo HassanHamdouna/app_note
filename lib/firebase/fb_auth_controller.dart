@@ -16,6 +16,7 @@ class FbAuthController {
       bool verify = userCredential.user!.emailVerified;
       if (!userCredential.user!.emailVerified) {
         await userCredential.user!.sendEmailVerification();
+        // print(userCredential.user!.sendEmailVerification());
       }
       return FbResponse(
           verify ? 'logged in successfully' : 'Verify your email', verify);
@@ -28,8 +29,7 @@ class FbAuthController {
 
   Future<FbResponse> createUser(String email, String password, String name) async {
     try {
-      UserCredential userCredential = await _auth
-          .createUserWithEmailAndPassword(email: email, password: password);
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       await userCredential.user!.updateDisplayName(name);
       await userCredential.user!.sendEmailVerification();
       return FbResponse('Registered successfully , verify email ', true);
@@ -44,7 +44,7 @@ class FbAuthController {
     return await _auth.signOut();
   }
 
-  User get currentUser => _auth.currentUser!;
+  User get currentUser =>  _auth.currentUser!;
 
   Future<FbResponse> forgetPassword(String email) async {
     try {

@@ -1,3 +1,5 @@
+import 'package:app_note/firebase/fb_auth_controller.dart';
+import 'package:app_note/models/fb_response.dart';
 import 'package:app_note/pref/shared_Controller.dart';
 import 'package:app_note/provider/languge_provider.dart';
 import 'package:app_note/utils/context_extenssion.dart';
@@ -52,70 +54,72 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              context.localizations.login_title,
-              style: GoogleFonts.cairo(
-                fontWeight: FontWeight.bold,
-                fontSize: 20.sp,
-                color: Colors.black,
-              ),
-            ),
-            Text(
-              context.localizations.login_subtitle,
-              style: GoogleFonts.cairo(
-                fontWeight: FontWeight.bold,
-                fontSize: 16.sp,
-                color: Colors.black45,
-              ),
-            ),
-            SizedBox(height: 20.h),
-            AppTextField(
-              hint: context.localizations.email,
-              prefixIcon: Icons.email,
-              keyboardType: TextInputType.emailAddress,
-              controller: _emailTextController,
-            ),
-            SizedBox(height: 10.h),
-            AppTextField(
-              hint: context.localizations.password,
-              obscureText: _obscure,
-              prefixIcon: Icons.lock,
-              keyboardType: TextInputType.text,
-              controller: _passwordTextController,
-              suffixIcon: IconButton(
-                onPressed: () {
-                  setState(() => _obscure = !_obscure);
-                },
-                icon: const Icon(Icons.visibility),
-              ),
-            ),
-            SizedBox(height: 20.h),
-            ElevatedButton(
-              onPressed: () => _performLogin(),
-              style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50.h),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5.r))),
-              child: Text(
-                context.localizations.login,
-                style: GoogleFonts.cairo(),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(context.localizations.new_account_message),
-                TextButton(
-                  onPressed: () =>
-                      Navigator.pushNamed(context, '/register_screen'),
-                  child: Text(context.localizations.create_account),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                context.localizations.login_title,
+                style: GoogleFonts.cairo(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.sp,
+                  color: Colors.black,
                 ),
-              ],
-            ),
-          ],
+              ),
+              Text(
+                context.localizations.login_subtitle,
+                style: GoogleFonts.cairo(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.sp,
+                  color: Colors.black45,
+                ),
+              ),
+              SizedBox(height: 20.h),
+              AppTextField(
+                hint: context.localizations.email,
+                prefixIcon: Icons.email,
+                keyboardType: TextInputType.emailAddress,
+                controller: _emailTextController,
+              ),
+              SizedBox(height: 10.h),
+              AppTextField(
+                hint: context.localizations.password,
+                obscureText: _obscure,
+                prefixIcon: Icons.lock,
+                keyboardType: TextInputType.text,
+                controller: _passwordTextController,
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    setState(() => _obscure = !_obscure);
+                  },
+                  icon: const Icon(Icons.visibility),
+                ),
+              ),
+              SizedBox(height: 20.h),
+              ElevatedButton(
+                onPressed: () => _performLogin(),
+                style: ElevatedButton.styleFrom(
+                    minimumSize: Size(double.infinity, 50.h),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.r))),
+                child: Text(
+                  context.localizations.login,
+                  style: GoogleFonts.cairo(),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(context.localizations.new_account_message),
+                  TextButton(
+                    onPressed: () =>
+                        Navigator.pushNamed(context, '/register_screen'),
+                    child: Text(context.localizations.create_account),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -217,7 +221,12 @@ class _LoginScreenState extends State<LoginScreen> {
     return false;
   }
 
-void _login() async {
-
-}
+  void _login() async {
+    FbResponse response = await FbAuthController().singIn(_emailTextController.text, _passwordTextController.text);
+    if(response.success){
+      Navigator.pushReplacementNamed(context, '/home_screen');
+    }
+    context.showSnackBar(message: response.message, error: !response.success);
+    print('object${response.message}');
+  }
 }

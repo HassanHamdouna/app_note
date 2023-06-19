@@ -1,3 +1,4 @@
+import 'package:app_note/firebase/fb_auth_controller.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -8,6 +9,12 @@ class HomeScreen extends StatelessWidget {
     return  Scaffold(
       appBar: AppBar(
         title: const  Text('Home Screen'),
+        actions: [
+          IconButton(onPressed: () async{
+            FbAuthController().signOut();
+            Navigator.pushReplacementNamed(context, '/login_screen');
+            }, icon: const Icon(Icons.login)),
+        ],
       ),
     );
   }
