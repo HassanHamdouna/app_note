@@ -26,10 +26,11 @@ class FbAuthController {
     }
   }
 
-  Future<FbResponse> createUser(String email, String password) async {
+  Future<FbResponse> createUser(String email, String password, String name) async {
     try {
       UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
+      await userCredential.user!.updateDisplayName(name);
       await userCredential.user!.sendEmailVerification();
       return FbResponse('Registered successfully , verify email ', true);
     } on FirebaseAuthException catch (e) {
