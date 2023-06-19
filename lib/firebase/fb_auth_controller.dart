@@ -23,4 +23,16 @@ class FbAuthController {
       return FbResponse('Something went Wrong', false);
     }
   }
+
+  Future<FbResponse> createUser(String email,String password) async {
+    try{
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      await userCredential.user!.sendEmailVerification();
+      return FbResponse('Registered successfully , verify email ', true);
+    }on FirebaseAuthException catch(e){
+      return FbResponse(e.message ?? 'error', false);
+    } catch(e){
+      return FbResponse('Something went Wrong', false);
+    }
+  }
 }
