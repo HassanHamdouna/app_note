@@ -31,4 +31,8 @@ class FbFireStoreController with FirebaseHelper {
         .then((value) => successfullyResponse)
         .catchError((error) => errorResponse);
   }
+
+  Stream<QuerySnapshot<Map<String,dynamic>>> read() async*{
+    yield* _firestore.collection('Notes').snapshots();
+  }
 }
