@@ -16,7 +16,6 @@ class FbAuthController {
       bool verify = userCredential.user!.emailVerified;
       if (!userCredential.user!.emailVerified) {
         await userCredential.user!.sendEmailVerification();
-        // print(userCredential.user!.sendEmailVerification());
       }
       return FbResponse(
           verify ? 'logged in successfully' : 'Verify your email', verify);

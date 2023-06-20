@@ -3,6 +3,9 @@ class Note {
   late String title;
   late String info;
 
+
+  Note();
+
   Note.fromMap(Map<String, dynamic> map) {
     title = map['title'];
     info = map['info'];

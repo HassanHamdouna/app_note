@@ -3,7 +3,8 @@ import 'package:app_note/models/note.dart';
 import 'package:app_note/utils/firebase_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class FbFireStoreController with FirebaseHelper {
+class FbStoreController with FirebaseHelper {
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<FbResponse> create(Note note) async {
