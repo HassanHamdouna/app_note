@@ -32,7 +32,17 @@ class FbFireStoreController with FirebaseHelper {
         .catchError((error) => errorResponse);
   }
 
-  Stream<QuerySnapshot<Map<String,dynamic>>> read() async*{
-    yield* _firestore.collection('Notes').snapshots();
+  // Stream<QuerySnapshot<Map<String,dynamic>>> read() async*{
+  //   yield* _firestore.collection('Notes').snapshots();
+  // }
+
+  Stream<QuerySnapshot<Note>> read() async* {
+    yield* _firestore
+        .collection('Notes')
+        .withConverter<Note>(
+          fromFirestore: (snapshot, options) => Note.fromMap(snapshot.data()!),
+          toFirestore: (Note value, options) => value.toMap(),
+        )
+        .snapshots();
   }
 }

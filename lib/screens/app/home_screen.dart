@@ -1,5 +1,6 @@
 import 'package:app_note/firebase/fb_auth_controller.dart';
 import 'package:app_note/firebase/fb_fire_store_controller.dart';
+import 'package:app_note/models/note.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,7 @@ class HomeScreen extends StatelessWidget {
             }, icon: const Icon(Icons.login)),
         ],
       ),
-      body: StreamBuilder<QuerySnapshot<Map<String,dynamic>>>(
+      body: StreamBuilder<QuerySnapshot<Note>>(
         stream: FbFireStoreController().read(),
         builder: (context, snapshot) {
           if(snapshot.connectionState == ConnectionState.waiting){
