@@ -109,7 +109,9 @@ class _NoteScreenState extends State<NoteScreen> {
     _isNewNote
         ? await FbStoreController().create(note)
         : await FbStoreController().update(note);
-    Navigator.pop(context);
+    // Navigator.pop(context);
+    Navigator.pushReplacementNamed(context, '/home_screen');
+
   }
 
   Note get note {
