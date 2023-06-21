@@ -14,7 +14,7 @@ class RegisterScreen extends StatefulWidget {
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen>  {
+class _RegisterScreenState extends State<RegisterScreen> {
   late TextEditingController _nameTextController;
   late TextEditingController _emailTextController;
   late TextEditingController _passwordTextController;
@@ -42,78 +42,80 @@ class _RegisterScreenState extends State<RegisterScreen>  {
       appBar: AppBar(
         title: Text(context.localizations.register),
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                context.localizations.register_title,
-                style: GoogleFonts.cairo(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.sp,
-                  color: Colors.black,
+      body: Stack(children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  context.localizations.register_title,
+                  style: GoogleFonts.cairo(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.sp,
+                    color: Colors.black,
+                  ),
                 ),
-              ),
-              Text(
-                context.localizations.register_subtitle,
-                style: GoogleFonts.cairo(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16.sp,
-                  color: Colors.black45,
+                Text(
+                  context.localizations.register_subtitle,
+                  style: GoogleFonts.cairo(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.sp,
+                    color: Colors.black45,
+                  ),
                 ),
-              ),
-              SizedBox(height: 20.h),
-              AppTextField(
-                hint: context.localizations.name,
-                prefixIcon: Icons.person,
-                keyboardType: TextInputType.name,
-                controller: _nameTextController,
-              ),
-              SizedBox(height: 10.h),
-              AppTextField(
-                hint: context.localizations.email,
-                prefixIcon: Icons.email,
-                keyboardType: TextInputType.emailAddress,
-                controller: _emailTextController,
-              ),
-              SizedBox(height: 10.h),
-              AppTextField(
-                hint: context.localizations.password,
-                obscureText: _obscure,
-                prefixIcon: Icons.lock,
-                keyboardType: TextInputType.text,
-                controller: _passwordTextController,
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    setState(() => _obscure = !_obscure);
-                  },
-                  icon: const Icon(Icons.visibility),
+                SizedBox(height: 20.h),
+                AppTextField(
+                  hint: context.localizations.name,
+                  prefixIcon: Icons.person,
+                  keyboardType: TextInputType.name,
+                  controller: _nameTextController,
                 ),
-              ),
-              SizedBox(height: 20.h),
-              ElevatedButton(
-                onPressed: () => _performRegister(),
-                style: ElevatedButton.styleFrom(
-                    minimumSize: Size(double.infinity, 50.h),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.r))),
-                child: Text(
-                  context.localizations.register,
-                  style: GoogleFonts.cairo(),
+                SizedBox(height: 10.h),
+                AppTextField(
+                  hint: context.localizations.email,
+                  prefixIcon: Icons.email,
+                  keyboardType: TextInputType.emailAddress,
+                  controller: _emailTextController,
                 ),
-              ),
-            ],
+                SizedBox(height: 10.h),
+                AppTextField(
+                  hint: context.localizations.password,
+                  obscureText: _obscure,
+                  prefixIcon: Icons.lock,
+                  keyboardType: TextInputType.text,
+                  controller: _passwordTextController,
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() => _obscure = !_obscure);
+                    },
+                    icon: const Icon(Icons.visibility),
+                  ),
+                ),
+                SizedBox(height: 20.h),
+                ElevatedButton(
+                  onPressed: () => _performRegister(),
+                  style: ElevatedButton.styleFrom(
+                      minimumSize: Size(double.infinity, 50.h),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.r))),
+                  child: Text(
+                    context.localizations.register,
+                    style: GoogleFonts.cairo(),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
+      ]),
     );
   }
 
   void _performRegister() async {
     if (_checkData()) {
-       _register();
+      _register();
     }
   }
 
@@ -124,23 +126,30 @@ class _RegisterScreenState extends State<RegisterScreen>  {
       return true;
     }
     context.showSnackBar(message: 'Enter required data', error: true);
+    // context.showLoading(message: 'Enter required data', error: true);
     return false;
   }
 
   void _register() async {
-    FbResponse response = await FbAuthController().createUser(_emailTextController.text, _passwordTextController.text, _nameTextController.text);
-    if(response.success){
-      // Navigator.pushNamed(context, '/login_screen');
-      Navigator.pop(context);
+    context.showLoading(message: 'Pleas Wait', error: true);
+
+    FbResponse response = await FbAuthController().createUser(
+        _emailTextController.text,
+        _passwordTextController.text,
+        _nameTextController.text);
+    if (response.success) {
+      Navigator.pushReplacementNamed(context, '/login_screen');
+      clearEditText();
     }
-    context.showSnackBar(message: response.message,error: !response.success);
+    if (!response.success) {
+      Navigator.pop(context);
+      context.showSnackBar(message: response.message, error: !response.success);
+    }
   }
 
-  // User get user {
-  //   User user = User();
-  //   user.name = _nameTextController.text;
-  //   user.email = _emailTextController.text;
-  //   user.password = _passwordTextController.text;
-  //   return user;
-  // }
+  void clearEditText() {
+    _nameTextController.text = '';
+    _emailTextController.text = '';
+    _passwordTextController.text = '';
+  }
 }

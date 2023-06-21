@@ -222,11 +222,23 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _login() async {
-    FbResponse response = await FbAuthController().singIn(_emailTextController.text, _passwordTextController.text);
-    if(response.success){
+    context.showLoading(message: 'Pleas Wait', error: true);
+    FbResponse response = await FbAuthController()
+        .singIn(_emailTextController.text, _passwordTextController.text);
+    if (response.success) {
+      context.showLoading(message: 'Pleas Wait', error: true);
+      Navigator.pop(context);
       Navigator.pushReplacementNamed(context, '/home_screen');
+      clearEditText();
     }
-    context.showSnackBar(message: response.message, error: !response.success);
-    print('object${response.message}');
+    if (!response.success) {
+      Navigator.pop(context);
+      context.showSnackBar(message: response.message, error: !response.success);
+    }
+  }
+
+  void clearEditText() {
+    _emailTextController.text = '';
+    _passwordTextController.text = '';
   }
 }
