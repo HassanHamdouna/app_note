@@ -217,7 +217,8 @@ class _LoginScreenState extends State<LoginScreen> {
         _passwordTextController.text.isNotEmpty) {
       return true;
     }
-    context.showSnackBar(message: 'Enter required data', error: true);
+    context.showAwesomeDialog(message: 'Enter required data', error: true);
+    // context.showSnackBar(message: 'Enter required data', error: true);
     return false;
   }
 
@@ -233,7 +234,8 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     if (!response.success) {
       Navigator.pop(context);
-      context.showSnackBar(message: response.message, error: !response.success);
+      // context.showSnackBar(message: response.message, error: !response.success);
+      context.showAwesomeDialog(message: response.message, error: !response.success);
     }
   }
 
