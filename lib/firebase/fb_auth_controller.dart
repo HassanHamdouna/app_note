@@ -16,6 +16,7 @@ class FbAuthController {
       bool verify = userCredential.user!.emailVerified;
       if (!userCredential.user!.emailVerified) {
         await userCredential.user!.sendEmailVerification();
+        await _auth.signOut();
       }
       return FbResponse(
           verify ? 'logged in successfully' : 'Verify your email', verify);
@@ -44,6 +45,7 @@ class FbAuthController {
   }
 
   User get currentUser =>  _auth.currentUser!;
+  bool get loggedIn =>  _auth.currentUser  !=null;
 
   Future<FbResponse> forgetPassword(String email) async {
     try {
