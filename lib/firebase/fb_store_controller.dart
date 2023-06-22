@@ -1,3 +1,4 @@
+import 'package:app_note/firebase/fb_auth_controller.dart';
 import 'package:app_note/models/fb_response.dart';
 import 'package:app_note/models/note.dart';
 import 'package:app_note/utils/firebase_helper.dart';
@@ -47,3 +48,4 @@ class FbStoreController with FirebaseHelper {
         .snapshots();
   }
 }
+// .where('userId', isEqualTo: FbAuthController().currentUser.uid)
