@@ -1,7 +1,10 @@
 
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 
 class UploadImagesScren extends StatefulWidget {
   const UploadImagesScren({super.key});
@@ -11,8 +14,17 @@ class UploadImagesScren extends StatefulWidget {
 }
 
 class _UploadImagesScrenState extends State<UploadImagesScren> {
-  // File? _image;
-  // final picker = ImagePicker();
+
+  late ImagePicker _imagePicker;
+  /// image use choose
+  XFile? _choosePickedImage;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _imagePicker = ImagePicker();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -23,7 +35,11 @@ class _UploadImagesScrenState extends State<UploadImagesScren> {
         padding: EdgeInsets.symmetric(horizontal: 20.w,vertical: 20.h),
         child: Column(
           children: [
-            Expanded(child: Container()),
+            Expanded(
+                child: _choosePickedImage == null
+                ?  IconButton(onPressed: ()=> openComer(), icon: const Icon(Icons.image,size: 20,color: Colors.black,))
+                :Image.file(File(_choosePickedImage!.path) )
+            ),
             ElevatedButton.icon(
                 onPressed: () {},
                 icon: const Icon(Icons.cloud_upload_rounded),
@@ -38,7 +54,15 @@ class _UploadImagesScrenState extends State<UploadImagesScren> {
           ],
         ),
       ),
-
     );
+  }
+
+  void openComer() async{
+    XFile? fileImage = await _imagePicker.pickImage(source: ImageSource.camera);
+    if(fileImage !=null){
+      setState(() {
+        _choosePickedImage = fileImage;
+      });
+    }
   }
 }
