@@ -1,4 +1,6 @@
 import 'package:app_note/screens/app/home_screen.dart';
+import 'package:app_note/screens/app/images/images_screen.dart';
+import 'package:app_note/screens/app/images/upload_images_screen.dart';
 import 'package:app_note/screens/app/note_screen.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,8 @@ extension ContextHelper on BuildContext {
         '/login_screen': (context) => const LoginScreen(),
         '/home_screen': (context) => const HomeScreen(),
         '/note_screen': (context) => NoteScreen(),
+        '/images_screen': (context) => const ImagesScreen(),
+        '/upload_images_screen': (context) => const UploadImagesScren(),
       };
 
   ThemeData get themData => ThemeData(

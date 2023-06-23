@@ -17,6 +17,7 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Home Screen'),
         actions: [
+          IconButton(onPressed: ()=> Navigator.pushNamed(context, '/images_screen'), icon: const Icon(Icons.image_outlined)),
           IconButton(
               onPressed: () async {
                 FbAuthController().signOut();
