@@ -1,10 +1,10 @@
-
-
 import 'dart:io';
 
+import 'package:app_note/firebase/fb_storage_controller.dart';
+import 'package:app_note/utils/context_extenssion.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
 class UploadImagesScren extends StatefulWidget {
@@ -15,10 +15,11 @@ class UploadImagesScren extends StatefulWidget {
 }
 
 class _UploadImagesScrenState extends State<UploadImagesScren> {
-
   late ImagePicker _imagePicker;
+
   /// image use choose
   XFile? _choosePickedImage;
+  double? _progressValue = 0;
 
   @override
   void initState() {
@@ -26,16 +27,25 @@ class _UploadImagesScrenState extends State<UploadImagesScren> {
     _imagePicker = ImagePicker();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       appBar: AppBar(
-        title: const Text('Upload',),
+        title: const Text(
+          'Upload',
+        ),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.w,vertical: 20.h),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
         child: Column(
           children: [
+            LinearProgressIndicator(
+              backgroundColor: Colors.grey,
+              color: Colors.green,
+              value: _progressValue,
+              minHeight: 5,
+            ),
             Expanded(
                 child: _choosePickedImage == null
                     ? ConstrainedBox(
@@ -50,12 +60,15 @@ class _UploadImagesScrenState extends State<UploadImagesScren> {
                               color: Colors.black,
                             )))
                     : InkWell(
-                        onTap: () => _showBottomSheet(context),
+                        onTap: () {
+                          _showBottomSheet(context);
+                          _progressValue = 0;
+                        },
                         child: Image.file(File(_choosePickedImage!.path)))),
             ElevatedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.cloud_upload_rounded),
-                label: const Text('upload'),
+              onPressed: () => _performUpload(),
+              icon: const Icon(Icons.cloud_upload_rounded),
+              label: const Text('upload'),
               style: ElevatedButton.styleFrom(
                 minimumSize: Size(double.infinity, 40.h),
               ),
@@ -68,40 +81,67 @@ class _UploadImagesScrenState extends State<UploadImagesScren> {
       ),
     );
   }
-  void openComer() async{
+
+  void _performUpload() {
+    if (_checkData()) {
+      _upload();
+    }
+  }
+
+  bool _checkData() {
+    if (_choosePickedImage != null) {
+      return true;
+    }
+    context.showAwesomeDialog(message: 'pick mage to upload', error: true);
+    return false;
+  }
+
+  void _upload() {
+    _uploadProgress();
+  }
+
+  void _uploadProgress({double? value}) {
+    setState(() {
+      _progressValue = value;
+    });
+  }
+
+  void _openComer() async {
     XFile? fileImage = await _imagePicker.pickImage(source: ImageSource.camera);
-    if(fileImage !=null){
+    if (fileImage != null) {
       setState(() {
         _choosePickedImage = fileImage;
       });
     }
   }
 
-  void openGallery() async{
-    XFile? fileImage = await _imagePicker.pickImage(source: ImageSource.gallery);
-    if(fileImage !=null){
+  void _openGallery() async {
+    XFile? fileImage =
+        await _imagePicker.pickImage(source: ImageSource.gallery);
+    if (fileImage != null) {
       setState(() {
         _choosePickedImage = fileImage;
       });
     }
   }
+
   void _showBottomSheet(BuildContext context) {
     showModalBottomSheet(
       shape: RoundedRectangleBorder(
-       borderRadius: BorderRadius.only(topRight: Radius.circular(20.r),topLeft: Radius.circular(20.r)),
+        borderRadius: BorderRadius.only(
+            topRight: Radius.circular(20.r), topLeft: Radius.circular(20.r)),
       ),
       clipBehavior: Clip.antiAlias,
       context: context,
       builder: (BuildContext context) {
         return BottomSheet(
-          onClosing: () {
-          },
+          onClosing: () {},
           builder: (context) {
             return Container(
               color: Colors.white,
               height: 180,
               child: Padding(
-                padding:  EdgeInsets.symmetric(horizontal: 14.w),
+                padding: EdgeInsets.symmetric(horizontal: 14.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -111,25 +151,36 @@ class _UploadImagesScrenState extends State<UploadImagesScren> {
                     ),
                     const Text(
                       'Please Choose Image',
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,color: Colors.blueGrey),
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blueGrey),
                     ),
                     const SizedBox(
                       height: 10,
                     ),
                     InkWell(
-                      onTap: (){
-                        openGallery();
+                      onTap: () {
+                        _openGallery();
                         Navigator.pop(context);
-                      },                      child: Row(
-                        children: const[
+                      },
+                      child: Row(
+                        children: const [
                           Expanded(
                               flex: 1,
-                              child: Icon(Icons.image,color: Colors.black45,)
-                          ),
+                              child: Icon(
+                                Icons.image,
+                                color: Colors.black45,
+                              )),
                           Expanded(
                             flex: 4,
-                            child: Text('From Gallery',
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400,color: Colors.blueGrey),),
+                            child: Text(
+                              'From Gallery',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.blueGrey),
+                            ),
                           ),
                         ],
                       ),
@@ -138,22 +189,28 @@ class _UploadImagesScrenState extends State<UploadImagesScren> {
                       height: 25,
                     ),
                     InkWell(
-                      onTap: (){
-                        openComer();
+                      onTap: () {
+                        _openComer();
                         Navigator.pop(context);
                       },
                       child: Row(
-                        children: const[
+                        children: const [
                           Expanded(
                               flex: 1,
-                              child: Icon(Icons.camera,color: Colors.black45,)
-                          ),
+                              child: Icon(
+                                Icons.camera,
+                                color: Colors.black45,
+                              )),
                           Expanded(
                             flex: 4,
-                            child: Text('From Camera',
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400,color: Colors.blueGrey),),
+                            child: Text(
+                              'From Camera',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.blueGrey),
+                            ),
                           ),
-
                         ],
                       ),
                     ),
@@ -161,11 +218,9 @@ class _UploadImagesScrenState extends State<UploadImagesScren> {
                 ),
               ),
             );
-
           },
         );
       },
     );
   }
-
 }
