@@ -7,10 +7,10 @@ class CreateEvent extends CrudEvent{
   CreateEvent(this.path);
 }
 
-class Read extends CrudEvent{
+class ReadEvent extends CrudEvent{
 
 }
-class Delete extends CrudEvent{
+class DeleteEvent extends CrudEvent{
   final int index;
-  Delete(this.index);
+  DeleteEvent(this.index);
 }
