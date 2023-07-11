@@ -139,14 +139,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _passwordTextController.text,
         _nameTextController.text);
     if (response.success) {
-      Navigator.pushReplacementNamed(context, '/login_screen');
+      Navigator.pop(context, '/login_screen');
+      // Navigator.pushReplacementNamed(context, '/login_screen');
       clearEditText();
     }
     if (!response.success) {
-      Navigator.pop(context);
+      // Navigator.pop(context);
       // context.showSnackBar(message: response.message, error: !response.success);
-      context.showAwesomeDialog(message: response.message, error: !response.success);
-
+      context.showAwesomeDialog(
+          message: response.message, error: !response.success);
     }
   }
 

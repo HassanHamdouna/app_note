@@ -13,34 +13,39 @@ class ImagesBloc extends Bloc<CrudEvent, CrudState> {
   }
 
   final FbStorageController _storageController = FbStorageController();
-  List<Reference> _reference = <Reference>[];
+  List<Reference> _references = <Reference>[];
 
   void _onCreateEvent(CreateEvent event, Emitter<CrudState> emit) {
     UploadTask uploadTask = _storageController.upload(event.path);
     uploadTask.snapshotEvents.listen((event) {
       if (event.state == TaskState.success) {
-        emit(LoadingState());
-        _reference.add(event.ref);
-        emit(ReadState(_reference));
-        emit(ProcessStat('Image uploaded successfully ', true, ProcessType.create));
+         _references.add(event.ref);
+         emit(ReadState(_references));
+        emit(ProcessState(
+            'Image uploaded successfully', true, ProcessType.create));
       } else if (event.state == TaskState.error) {
-        emit(ProcessStat('Image Not upload field ', false, ProcessType.create));
+        emit(ProcessState('Image Not uploaded', false, ProcessType.create));
       }
     });
+    emit(ReadState(_references));
+
   }
 
   void _onReadEvent(ReadEvent event, Emitter<CrudState> emit) async {
-    _reference = await _storageController.read();
-    emit(ReadState(_reference));
+    emit(LoadingState());
+    _references = await _storageController.read();
+    emit(ReadState(_references));
   }
 
   void _onDeleteEvent(DeleteEvent event, Emitter<CrudState> emit) async {
-    FbResponse response = await _storageController.delete(_reference[event.index].fullPath);
-    if(response.success){
-      _reference.removeAt(event.index);
-      emit(ProcessStat(response.message, response.success, ProcessType.delete));
-      emit(ReadState(_reference));
+    FbResponse response =
+        await _storageController.delete(_references[event.index].fullPath);
+    if (response.success) {
+      _references.removeAt(event.index);
+      emit(
+          ProcessState(response.message, response.success, ProcessType.delete));
+      emit(ReadState(_references));
     }
-    emit(ProcessStat(response.message, !response.success, ProcessType.delete));
+    emit(ProcessState(response.message, !response.success, ProcessType.delete));
   }
 }

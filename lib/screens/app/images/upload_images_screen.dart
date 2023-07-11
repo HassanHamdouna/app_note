@@ -1,24 +1,24 @@
 import 'dart:io';
-
-import 'package:app_note/firebase/fb_storage_controller.dart';
+import 'package:app_note/bloc/bloc/images_bloc.dart';
+import 'package:app_note/bloc/events/crud_event.dart';
+import 'package:app_note/bloc/states/curd_state.dart';
 import 'package:app_note/utils/context_extenssion.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 
-class UploadImagesScren extends StatefulWidget {
-  const UploadImagesScren({super.key});
+class UploadImagesScreen extends StatefulWidget {
+  const UploadImagesScreen({super.key});
 
   @override
-  State<UploadImagesScren> createState() => _UploadImagesScrenState();
+  State<UploadImagesScreen> createState() => _UploadImagesScreenState();
 }
 
-class _UploadImagesScrenState extends State<UploadImagesScren> {
+class _UploadImagesScreenState extends State<UploadImagesScreen> {
   late ImagePicker _imagePicker;
 
-  /// image use choose
-  XFile? _choosePickedImage;
+  XFile? _filePickedImage;
   double? _progressValue = 0;
 
   @override
@@ -36,47 +36,57 @@ class _UploadImagesScrenState extends State<UploadImagesScren> {
           'Upload',
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-        child: Column(
-          children: [
-            LinearProgressIndicator(
-              backgroundColor: Colors.grey,
-              color: Colors.green,
-              value: _progressValue,
-              minHeight: 5,
-            ),
-            Expanded(
-                child: _choosePickedImage == null
-                    ? ConstrainedBox(
-                        constraints: const BoxConstraints(
-                            maxWidth: double.infinity,
-                            minWidth: double.infinity),
-                        child: IconButton(
-                            onPressed: () => _showBottomSheet(context),
-                            icon: const Icon(
-                              Icons.image,
-                              size: 100,
-                              color: Colors.black,
-                            )))
-                    : InkWell(
-                        onTap: () {
-                          _showBottomSheet(context);
-                          _progressValue = 0;
-                        },
-                        child: Image.file(File(_choosePickedImage!.path)))),
-            ElevatedButton.icon(
-              onPressed: () => _performUpload(),
-              icon: const Icon(Icons.cloud_upload_rounded),
-              label: const Text('upload'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 40.h),
+      body: BlocListener<ImagesBloc, CrudState>(
+        listenWhen: (previous, current) =>
+            current is ProcessState &&
+            current.processType == ProcessType.create,
+        listener: (context, state) {
+          state as ProcessState;
+          _uploadProgress(value: state.sussecc ? 1 : 0);
+          context.showSnackBar(message: state.message, error: !state.sussecc);
+        },
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+          child: Column(
+            children: [
+              LinearProgressIndicator(
+                backgroundColor: Colors.grey,
+                color: Colors.green,
+                value: _progressValue,
+                minHeight: 5,
               ),
-            ),
-            const SizedBox(
-              height: 10,
-            )
-          ],
+              Expanded(
+                  child: _filePickedImage == null
+                      ? ConstrainedBox(
+                          constraints: const BoxConstraints(
+                              maxWidth: double.infinity,
+                              minWidth: double.infinity),
+                          child: IconButton(
+                              onPressed: () => _showBottomSheet(context),
+                              icon: const Icon(
+                                Icons.image,
+                                size: 100,
+                                color: Colors.black,
+                              )))
+                      : InkWell(
+                          onTap: () {
+                            _showBottomSheet(context);
+                            _progressValue = 0;
+                          },
+                          child: Image.file(File(_filePickedImage!.path)))),
+              ElevatedButton.icon(
+                onPressed: () => _performUpload(),
+                icon: const Icon(Icons.cloud_upload_rounded),
+                label: const Text('upload'),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(double.infinity, 40.h),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -89,15 +99,19 @@ class _UploadImagesScrenState extends State<UploadImagesScren> {
   }
 
   bool _checkData() {
-    if (_choosePickedImage != null) {
+    if (_filePickedImage != null) {
       return true;
     }
     context.showAwesomeDialog(message: 'pick mage to upload', error: true);
     return false;
   }
 
-  void _upload() {
+  void _upload()  {
     _uploadProgress();
+     BlocProvider.of<ImagesBloc>(context).add(CreateEvent(_filePickedImage!.path));
+     Future.delayed(const Duration(seconds: 2),() {
+       Navigator.pop(context, '/images_screen');
+     },);
   }
 
   void _uploadProgress({double? value}) {
@@ -110,7 +124,7 @@ class _UploadImagesScrenState extends State<UploadImagesScren> {
     XFile? fileImage = await _imagePicker.pickImage(source: ImageSource.camera);
     if (fileImage != null) {
       setState(() {
-        _choosePickedImage = fileImage;
+        _filePickedImage = fileImage;
       });
     }
   }
@@ -120,7 +134,7 @@ class _UploadImagesScrenState extends State<UploadImagesScren> {
         await _imagePicker.pickImage(source: ImageSource.gallery);
     if (fileImage != null) {
       setState(() {
-        _choosePickedImage = fileImage;
+        _filePickedImage = fileImage;
       });
     }
   }

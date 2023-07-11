@@ -21,7 +21,7 @@ extension ContextHelper on BuildContext {
         '/home_screen': (context) => const HomeScreen(),
         '/note_screen': (context) => NoteScreen(),
         '/images_screen': (context) => const ImagesScreen(),
-        '/upload_images_screen': (context) => const UploadImagesScren(),
+        '/upload_images_screen': (context) => const UploadImagesScreen(),
       };
 
   ThemeData get themData => ThemeData(
@@ -88,31 +88,31 @@ extension ContextHelper on BuildContext {
     );
   }
 
-  void showAwesomeDialog({required String message, bool error = false}){
-        AwesomeDialog(
-          context: this,
-          dialogType: DialogType.warning,
-          borderSide: const BorderSide(
-            color: Colors.white,
-            width: 2,
-          ),
-          width: 350,
-          buttonsBorderRadius: const BorderRadius.all(
-            Radius.circular(2),
-          ),
-          dismissOnTouchOutside: true,
-          dismissOnBackKeyPress: false,
-          headerAnimationLoop: false,
-          animType: AnimType.bottomSlide,
-          title: 'Warning',
-          desc: message,
-          showCloseIcon: true,
-          /*btnCancelOnPress: () {},*/
-          btnOkOnPress: () {},
-          btnOkColor: Colors.lightBlue
-        ).show();
-
+  void showAwesomeDialog({required String message, bool error = false}) {
+    AwesomeDialog(
+            context: this,
+            dialogType: DialogType.warning,
+            borderSide: const BorderSide(
+              color: Colors.white,
+              width: 2,
+            ),
+            width: 350,
+            buttonsBorderRadius: const BorderRadius.all(
+              Radius.circular(2),
+            ),
+            dismissOnTouchOutside: true,
+            dismissOnBackKeyPress: false,
+            headerAnimationLoop: false,
+            animType: AnimType.bottomSlide,
+            title: 'Warning',
+            desc: message,
+            showCloseIcon: true,
+            /*btnCancelOnPress: () {},*/
+            btnOkOnPress: () {},
+            btnOkColor: Colors.lightBlue)
+        .show();
   }
+
   void showSnackBar({required String message, bool error = false}) {
     ScaffoldMessenger.of(this).showSnackBar(SnackBar(
       content: Text(message,

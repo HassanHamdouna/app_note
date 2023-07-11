@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../widgets/app_circular_progress.dart';
 import 'note_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -17,7 +18,9 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Home Screen'),
         actions: [
-          IconButton(onPressed: ()=> Navigator.pushNamed(context, '/images_screen'), icon: const Icon(Icons.image_outlined)),
+          IconButton(
+              onPressed: () => Navigator.pushNamed(context, '/images_screen'),
+              icon: const Icon(Icons.image_outlined)),
           IconButton(
               onPressed: () async {
                 FbAuthController().signOut();
@@ -34,9 +37,7 @@ class HomeScreen extends StatelessWidget {
                 stream: FbStoreController().read(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                    return const AppCircularProgress();
                   } else if (snapshot.hasData &&
                       snapshot.data!.docs.isNotEmpty) {
                     return ListView.builder(
@@ -91,7 +92,7 @@ class HomeScreen extends StatelessWidget {
                               subtitle:
                                   Text(snapshot.data!.docs[index].data().info),
                               trailing: IconButton(
-                                onPressed: (){},
+                                onPressed: () {},
                                 icon: const Icon(Icons.image,
                                     color: Colors.lightBlue),
                               )),

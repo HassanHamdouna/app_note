@@ -118,6 +118,44 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
+          SizedBox(
+            height: 40.h,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                icon: Image.asset('images/facebook_icon.png'), // Replace with your Facebook icon image
+                onPressed: () {
+                  // Add your Facebook button functionality here
+                },
+              ),
+              IconButton(
+                icon: Image.asset('images/twitter_icon.png'), // Replace with your Twitter icon image
+                onPressed: () {
+                  // Add your Twitter button functionality here
+                },
+              ),
+              IconButton(
+                icon: Image.asset('images/instagram_icon.png'), // Replace with your Instagram icon image
+                onPressed: () {
+                  // Add your Instagram button functionality here
+                },
+              ),
+              IconButton(
+                icon: Image.asset('images/google_icon.png'), // Replace with your Instagram icon image
+                onPressed: () {
+                  // Add your Instagram button functionality here
+                },
+              ),
+              IconButton(
+                icon: Image.asset('images/apple_icon.png'), // Replace with your Instagram icon image
+                onPressed: () {
+                  // Add your Instagram button functionality here
+                },
+              ),
+            ],
+          ),
             ],
           ),
         ),
@@ -235,7 +273,8 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!response.success) {
       Navigator.pop(context);
       // context.showSnackBar(message: response.message, error: !response.success);
-      context.showAwesomeDialog(message: response.message, error: !response.success);
+      context.showAwesomeDialog(
+          message: response.message, error: !response.success);
     }
   }
 

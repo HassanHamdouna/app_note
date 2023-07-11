@@ -4,22 +4,23 @@ import 'package:app_note/models/fb_response.dart';
 import 'package:app_note/utils/firebase_helper.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-class FbStorageController with FirebaseHelper{
+class FbStorageController with FirebaseHelper {
   final FirebaseStorage _storage = FirebaseStorage.instance;
+
   /// function :
   ///1) upload
   ///2) Delete
   ///3) Read
 
- UploadTask upload(String path){
+  UploadTask upload(String path) {
     UploadTask uploadTask = _storage
-        .ref('images/${DateTime.now().millisecond}')
+        .ref('images/${DateTime.now().millisecondsSinceEpoch}')
         .putFile(File(path));
     return uploadTask;
   }
 
   Future<List<Reference>> read() async {
-    ListResult result = await _storage.ref('image').listAll();
+    ListResult result = await _storage.ref('images').listAll();
     if (result.items.isNotEmpty) {
       return result.items;
     }

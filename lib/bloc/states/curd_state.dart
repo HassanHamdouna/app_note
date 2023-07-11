@@ -1,17 +1,21 @@
 import 'package:firebase_storage/firebase_storage.dart';
-enum ProcessType{create,delete}
-class CrudState{
-}
-class LoadingState extends CrudState{
-}
 
-class ReadState extends CrudState{
-  List<Reference> reference ;
+enum ProcessType { create, delete }
+
+class CrudState {}
+
+class LoadingState extends CrudState {}
+
+class ReadState extends CrudState {
+  List<Reference> reference;
+
   ReadState(this.reference);
 }
-class ProcessStat extends CrudState{
+
+class ProcessState extends CrudState {
   final String message;
   final bool sussecc;
   final ProcessType processType;
-  ProcessStat(this.message, this.sussecc, this.processType);
+
+  ProcessState(this.message, this.sussecc, this.processType);
 }
