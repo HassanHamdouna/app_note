@@ -1,5 +1,6 @@
 import 'package:app_note/models/fb_response.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class FbAuthController {
   /// 1) singInWithEmailAndPassword
@@ -8,6 +9,28 @@ class FbAuthController {
   /// 4) forgetPassword
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+  Future<FbResponse> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      final UserCredential userGoogle = await _auth.signInWithCredential(credential);
+      bool verify = userGoogle.user!=null;
+      // bool verify = userGoogle!=null;
+
+      return FbResponse(
+          verify ? 'logged in successfully' : 'Verify your email', verify);
+    } on FirebaseAuthException catch (e) {
+      return FbResponse(e.message ?? 'error', false);
+    } catch (e) {
+      return FbResponse('Something went Wrong', false);
+    }
+  }
 
   Future<FbResponse> singIn(String email, String password) async {
     try {
