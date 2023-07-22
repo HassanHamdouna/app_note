@@ -3,6 +3,7 @@ import 'package:app_note/models/fb_response.dart';
 import 'package:app_note/pref/shared_Controller.dart';
 import 'package:app_note/provider/languge_provider.dart';
 import 'package:app_note/utils/context_extenssion.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -118,44 +119,51 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
-          SizedBox(
-            height: 40.h,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              IconButton(
-                icon: Image.asset('images/facebook_icon.png'), // Replace with your Facebook icon image
-                onPressed: () {
-                },
+              SizedBox(
+                height: 40.h,
               ),
-              IconButton(
-                icon: Image.asset('images/twitter_icon.png'), // Replace with your Twitter icon image
-                onPressed: () {
-                },
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconButton(
+                    icon: Image.asset('images/facebook_icon.png'),
+                    // Replace with your Facebook icon image
+                    onPressed: () async {
+                      /*final UserCredential userCredential =
+                          await FbAuthController().signInWithFacebook();
+                      if (userCredential.user != null) {
+                        Navigator.pushReplacementNamed(context, '/home_screen');
+                      }*/
+                    },
+                  ),
+                  IconButton(
+                    icon: Image.asset('images/twitter_icon.png'),
+                    // Replace with your Twitter icon image
+                    onPressed: () {},
+                  ),
+                  IconButton(
+                    icon: Image.asset('images/google_icon.png'),
+                    // Replace with your Instagram icon image
+                    onPressed: () async {
+                      FbResponse response =
+                          await FbAuthController().signInWithGoogle();
+                      if (response.success) {
+                        Navigator.pushReplacementNamed(context, '/home_screen');
+                      }
+                      if (!response.success) {
+                        context.showAwesomeDialog(
+                            message: response.message,
+                            error: !response.success);
+                      }
+                    },
+                  ),
+                  IconButton(
+                    icon: Image.asset('images/apple_icon.png'),
+                    // Replace with your Instagram icon image
+                    onPressed: () {},
+                  ),
+                ],
               ),
-
-              IconButton(
-                icon: Image.asset('images/google_icon.png'), // Replace with your Instagram icon image
-                onPressed: () async{
-                  FbResponse response = await FbAuthController()
-                      .signInWithGoogle();
-                  if (response.success) {
-                    Navigator.pushReplacementNamed(context, '/home_screen');
-                  }
-                  if (!response.success) {
-                    context.showAwesomeDialog(
-                        message: response.message, error: !response.success);
-                  }
-                },
-              ),
-              IconButton(
-                icon: Image.asset('images/apple_icon.png'), // Replace with your Instagram icon image
-                onPressed: () {
-                },
-              ),
-            ],
-          ),
             ],
           ),
         ),
@@ -204,7 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           fontWeight: FontWeight.w300,
                         ),
                       ),
-                      const Divider(),
+                      Divider(),
                       RadioListTile<String>(
                         title: Text('English', style: GoogleFonts.cairo()),
                         value: 'en',
