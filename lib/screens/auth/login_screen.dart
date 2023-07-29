@@ -254,8 +254,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!response.success) {
       Navigator.pop(context);
       // context.showSnackBar(message: response.message, error: !response.success);
-      context.showAwesomeDialog(
-          message: response.message, error: !response.success);
+      context.showAwesomeDialog(message: response.message, error: false);
     }
   }
 

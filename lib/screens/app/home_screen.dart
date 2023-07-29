@@ -4,6 +4,7 @@ import 'package:app_note/models/fb_response.dart';
 import 'package:app_note/models/note.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../widgets/app_circular_progress.dart';
@@ -21,12 +22,67 @@ class HomeScreen extends StatelessWidget {
           IconButton(
               onPressed: () => Navigator.pushNamed(context, '/images_screen'),
               icon: const Icon(Icons.image_outlined)),
+/*
           IconButton(
               onPressed: () async {
                 FbAuthController().signOut();
                 Navigator.pushReplacementNamed(context, '/login_screen');
               },
               icon: const Icon(Icons.login)),
+*/
+          PopupMenuButton<int>(
+            icon: const Icon(Icons.more_vert),
+            offset: const Offset(0, 50),
+            onSelected: (value) {
+              switch (value) {
+                case 0:
+                  {
+                    Navigator.pushNamed(context, '/change_password_screen');
+                    break;
+                  }
+                case 1:
+                  {
+                    FbAuthController().signOut();
+                    Navigator.pushReplacementNamed(context, '/login_screen');
+                    break;
+                  }
+                default:
+                  {
+                    Navigator.pop(context);
+                    break;
+                  }
+              }
+            },
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem(
+                  value: 0,
+                  child: Row(
+                    children: [
+                      const Icon(Icons.change_circle_outlined),
+                      SizedBox(
+                        width: 10.w,
+                      ),
+                      const Text('change Password'),
+                    ],
+                  ),
+                ),
+                const PopupMenuDivider(),
+                PopupMenuItem(
+                  value: 1,
+                  child: Row(
+                    children: [
+                      const Icon(Icons.login),
+                      SizedBox(
+                        width: 10.w,
+                      ),
+                      const Text('logOut'),
+                    ],
+                  ),
+                ),
+              ];
+            },
+          ),
         ],
       ),
       body: Stack(

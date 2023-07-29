@@ -3,29 +3,34 @@ import 'package:app_note/models/fb_response.dart';
 import 'package:app_note/utils/context_extenssion.dart';
 import 'package:app_note/widgets/app_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ForgotPasswordScreen extends StatefulWidget {
-  const ForgotPasswordScreen({Key? key}) : super(key: key);
+class ChangePasswordScreen extends StatefulWidget {
+  const ChangePasswordScreen({super.key});
 
   @override
-  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+  State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
 }
 
-late TextEditingController _emailController;
+class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
+  late TextEditingController _oldPasswordController;
+  late TextEditingController _newPasswordController;
+  late TextEditingController _confirmPasswordController;
 
-class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    _emailController = TextEditingController();
+    _oldPasswordController = TextEditingController();
+    _newPasswordController = TextEditingController();
+    _confirmPasswordController = TextEditingController();
   }
 
   @override
   void dispose() {
-    _emailController.dispose();
-    // TODO: implement dispose
+    _oldPasswordController.dispose();
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -56,7 +61,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 const SizedBox(
                   height: 70,
                 ),
-                Text('Forgot Password',
+                Text('Change Password',
                     style: GoogleFonts.ubuntu(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -65,35 +70,49 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 40),
-                  child: Text(
-                      'Please enter your email address. You will receive a link to create new password via email',
-                      style: GoogleFonts.ubuntu(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: const Color(0xff7E7B7B),
-                      )),
-                ),
                 const SizedBox(
                   height: 29,
                 ),
                 AppTextField(
-                  hint: 'Email',
-                  prefixIcon: Icons.email,
+                  hint: 'old password',
+                  prefixIcon: Icons.lock,
                   keyboardType: TextInputType.name,
                   focusedBorderColor: const Color(0xffEDEDED),
                   obscureText: false,
                   suffixIcon: null,
-                  controller: _emailController,
+                  controller: _oldPasswordController,
                 ),
-                const SizedBox(
-                  height: 20,
+                SizedBox(
+                  height: 10.h,
+                ),
+                AppTextField(
+                  hint: 'new password',
+                  prefixIcon: Icons.lock,
+                  keyboardType: TextInputType.name,
+                  focusedBorderColor: const Color(0xffEDEDED),
+                  obscureText: false,
+                  suffixIcon: null,
+                  controller: _newPasswordController,
+                ),
+                SizedBox(
+                  height: 10.h,
+                ),
+                AppTextField(
+                  hint: 'confirm password',
+                  prefixIcon: Icons.lock,
+                  keyboardType: TextInputType.name,
+                  focusedBorderColor: const Color(0xffEDEDED),
+                  obscureText: false,
+                  suffixIcon: null,
+                  controller: _confirmPasswordController,
+                ),
+                SizedBox(
+                  height: 20.h,
                 ),
                 ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      _performForgotPassword();
+                      _performChangePassword();
                     });
                   },
                   style: ElevatedButton.styleFrom(
@@ -102,7 +121,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(11))),
                   child: Text(
-                    'Reset Password',
+                    'change Password',
                     style: GoogleFonts.ubuntu(
                       fontWeight: FontWeight.w400,
                       fontSize: 18,
@@ -118,22 +137,35 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     );
   }
 
-  void _performForgotPassword() {
+  void _performChangePassword() {
     if (_checkDate()) {
-      _forgotPassword();
+      _changePassword();
     }
   }
 
   bool _checkDate() {
-    if (_emailController.text.isNotEmpty) {
-      return true;
+    if (_oldPasswordController.text.isNotEmpty &&
+        _newPasswordController.text.isNotEmpty &&
+        _confirmPasswordController.text.isNotEmpty) {
+      if (_newPasswordController.text == _confirmPasswordController.text) {
+        return true;
+      }
+      context.showAwesomeDialog(
+        message: ' error newPassword != confirm Password',
+        error: false,
+      );
+      return false;
     }
+    context.showAwesomeDialog(
+      message: 'empty password',
+      error: false,
+    );
     return false;
   }
 
-  void _forgotPassword() async {
-    FbResponse response =
-        await FbAuthController().forgetPassword(_emailController.text);
+  void _changePassword() async {
+    FbResponse response = await FbAuthController().changePassword(
+        _oldPasswordController.text, _newPasswordController.text);
     if (response.success) {
       // Navigator.pushReplacementNamed(context, '/login_screen');
       context.showAwesomeDialog(

@@ -62,4 +62,25 @@ class FbAuthController {
       return FbResponse('Something went Wrong', false);
     }
   }
+
+  Future<FbResponse> changePassword(
+      String oldPassword, String newPassword) async {
+    try {
+      if (_auth.currentUser == null) {
+        return FbResponse('No user currently signed in.', false);
+      }
+      final emailCredential = EmailAuthProvider.credential(
+        email: currentUser.email!,
+        password: oldPassword,
+      );
+      await currentUser.reauthenticateWithCredential(emailCredential);
+      await currentUser.updatePassword(newPassword);
+
+      return FbResponse('Password changed successfully', true);
+    } on FirebaseAuthException catch (e) {
+      return FbResponse(e.message ?? 'An error occurred', false);
+    } catch (e) {
+      return FbResponse('Something went wrong', false);
+    }
+  }
 }
