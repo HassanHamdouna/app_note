@@ -2,6 +2,7 @@ import 'package:app_note/screens/app/home_screen.dart';
 import 'package:app_note/screens/app/images/images_screen.dart';
 import 'package:app_note/screens/app/images/upload_images_screen.dart';
 import 'package:app_note/screens/app/note_screen.dart';
+import 'package:app_note/screens/auth/forgot_password_screen.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,6 +19,7 @@ extension ContextHelper on BuildContext {
         '/launch_screen': (context) => const LaunchScreen(),
         '/register_screen': (context) => const RegisterScreen(),
         '/login_screen': (context) => const LoginScreen(),
+        '/forgot_password_screen': (context) => const ForgotPasswordScreen(),
         '/home_screen': (context) => const HomeScreen(),
         '/note_screen': (context) => NoteScreen(),
         '/images_screen': (context) => const ImagesScreen(),
@@ -88,10 +90,11 @@ extension ContextHelper on BuildContext {
     );
   }
 
-  void showAwesomeDialog({required String message, bool error = false}) {
+  void showAwesomeDialog(
+      {required String message, required bool error, Function()? onPressed}) {
     AwesomeDialog(
             context: this,
-            dialogType: DialogType.warning,
+            dialogType: error ? DialogType.success : DialogType.warning,
             borderSide: const BorderSide(
               color: Colors.white,
               width: 2,
@@ -104,11 +107,11 @@ extension ContextHelper on BuildContext {
             dismissOnBackKeyPress: false,
             headerAnimationLoop: false,
             animType: AnimType.bottomSlide,
-            title: 'Warning',
+            title: error ? 'Good' : 'Warning',
             desc: message,
             showCloseIcon: true,
             /*btnCancelOnPress: () {},*/
-            btnOkOnPress: () {},
+            btnOkOnPress: onPressed,
             btnOkColor: Colors.lightBlue)
         .show();
   }

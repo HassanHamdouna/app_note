@@ -96,7 +96,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   icon: const Icon(Icons.visibility),
                 ),
               ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 5.h),
+              Align(
+                alignment: AlignmentDirectional.topEnd,
+                child: TextButton(
+                    onPressed: () =>
+                        Navigator.pushNamed(context, '/forgot_password_screen'),
+                    child: Text(
+                      'Forget Password ?',
+                      style: GoogleFonts.poppins(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.blueAccent,
+                      ),
+                    )),
+              ),
+              SizedBox(height: 10.h),
               ElevatedButton(
                 onPressed: () => _performLogin(),
                 style: ElevatedButton.styleFrom(
